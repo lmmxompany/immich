@@ -76,6 +76,7 @@ const adminUserResponse = Object.freeze({
   shouldChangePassword: false,
   profileImagePath: '',
   createdAt: '2021-01-01',
+  updatedAt: '2021-01-01',
 });
 
 describe(UserService.name, () => {
@@ -113,6 +114,7 @@ describe(UserService.name, () => {
           shouldChangePassword: false,
           profileImagePath: '',
           createdAt: '2021-01-01',
+          updatedAt: '2021-01-01',
         },
       ]);
     });
