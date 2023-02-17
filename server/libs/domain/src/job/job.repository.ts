@@ -3,9 +3,11 @@ import {
   IDeleteFileOnDiskJob,
   IExifExtractionProcessor,
   IMachineLearningJob,
-  IVideoConversionProcessor,
   IReverseGeocodingProcessor,
+  ISearchIndexAlbumJob,
+  ISearchIndexAssetJob,
   IUserDeletionJob,
+  IVideoConversionProcessor,
   IVideoLengthExtractionProcessor,
   JpegGeneratorProcessor,
   WebpGeneratorProcessor,
@@ -38,7 +40,11 @@ export type JobItem =
   | { name: JobName.EXTRACT_VIDEO_METADATA; data: IVideoLengthExtractionProcessor }
   | { name: JobName.OBJECT_DETECTION; data: IMachineLearningJob }
   | { name: JobName.IMAGE_TAGGING; data: IMachineLearningJob }
-  | { name: JobName.DELETE_FILE_ON_DISK; data: IDeleteFileOnDiskJob };
+  | { name: JobName.DELETE_FILE_ON_DISK; data: IDeleteFileOnDiskJob }
+  | { name: JobName.SEARCH_INDEX_ASSETS }
+  | { name: JobName.SEARCH_INDEX_ASSET; data: ISearchIndexAssetJob }
+  | { name: JobName.SEARCH_INDEX_ALBUMS }
+  | { name: JobName.SEARCH_INDEX_ALBUM; data: ISearchIndexAlbumJob };
 
 export const IJobRepository = 'IJobRepository';
 

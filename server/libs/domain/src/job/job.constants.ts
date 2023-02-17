@@ -8,6 +8,7 @@ export enum QueueName {
   USER_DELETION = 'user-deletion-queue',
   CONFIG = 'config-queue',
   BACKGROUND_TASK = 'background-task',
+  SEARCH_INDEX = 'search-index-queue',
 }
 
 export enum JobName {
@@ -25,4 +26,8 @@ export enum JobName {
   IMAGE_TAGGING = 'tag-image',
   DELETE_FILE_ON_DISK = 'delete-file-on-disk',
   CHECKSUM_GENERATION = 'checksum-generation',
+  SEARCH_INDEX_ASSETS = 'index-assets',
+  SEARCH_INDEX_ASSET = 'index-asset',
+  SEARCH_INDEX_ALBUMS = 'index-albums',
+  SEARCH_INDEX_ALBUM = 'index-album',
 }

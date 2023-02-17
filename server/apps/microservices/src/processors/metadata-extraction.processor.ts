@@ -5,9 +5,11 @@ import {
   IVideoLengthExtractionProcessor,
   QueueName,
   JobName,
+  IAssetRepository,
+  ISearchRepository,
 } from '@app/domain';
 import { Process, Processor } from '@nestjs/bull';
-import { Logger } from '@nestjs/common';
+import { Inject, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Job } from 'bull';
@@ -19,6 +21,7 @@ import geocoder, { InitOptions } from 'local-reverse-geocoder';
 import { getName } from 'i18n-iso-countries';
 import fs from 'node:fs';
 import { ExifDateTime, exiftool } from 'exiftool-vendored';
+import { AssetCore } from '../../../../libs/domain/src/asset/asset.core';
 
 function geocoderInit(init: InitOptions) {
   return new Promise<void>(function (resolve) {
@@ -73,15 +76,19 @@ export type GeoData = {
 export class MetadataExtractionProcessor {
   private logger = new Logger(MetadataExtractionProcessor.name);
   private isGeocodeInitialized = false;
+  private assetCore: AssetCore;
+
   constructor(
-    @InjectRepository(AssetEntity)
-    private assetRepository: Repository<AssetEntity>,
+    @Inject(IAssetRepository) assetRepository: IAssetRepository,
+    @Inject(ISearchRepository) searchRepository: ISearchRepository,
 
     @InjectRepository(ExifEntity)
     private exifRepository: Repository<ExifEntity>,
 
     configService: ConfigService,
   ) {
+    this.assetCore = new AssetCore(assetRepository, searchRepository);
+
     if (!configService.get('DISABLE_REVERSE_GEOCODING')) {
       this.logger.log('Initializing Reverse Geocoding');
       geocoderInit({
@@ -178,7 +185,7 @@ export class MetadataExtractionProcessor {
       newExif.latitude = exifData?.GPSLatitude || null;
       newExif.longitude = exifData?.GPSLongitude || null;
 
-      await this.assetRepository.save({
+      await this.assetCore.save({
         id: asset.id,
         createdAt: createdAt?.toISOString(),
       });
@@ -332,7 +339,7 @@ export class MetadataExtractionProcessor {
       }
 
       await this.exifRepository.upsert(newExif, { conflictPaths: ['assetId'] });
-      await this.assetRepository.update({ id: asset.id }, { duration: durationString, createdAt: createdAt });
+      await this.assetCore.save({ id: asset.id, duration: durationString, createdAt });
     } catch (err) {
       // do nothing
       console.log('Error in video metadata extraction', err);

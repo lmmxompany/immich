@@ -1,8 +1,11 @@
 import {
+  IAlbumRepository,
+  IAssetRepository,
   ICryptoRepository,
   IDeviceInfoRepository,
   IJobRepository,
   IKeyRepository,
+  ISearchRepository,
   ISharedLinkRepository,
   IStorageRepository,
   ISystemConfigRepository,
@@ -16,8 +19,12 @@ import { Global, Module, Provider } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CryptoRepository } from './auth/crypto.repository';
 import {
+  AlbumEntity,
+  AlbumRepository,
   APIKeyEntity,
   APIKeyRepository,
+  AssetEntity,
+  AssetRepository,
   databaseConfig,
   DeviceInfoEntity,
   DeviceInfoRepository,
@@ -30,9 +37,12 @@ import {
   UserTokenEntity,
 } from './db';
 import { JobRepository } from './job';
+import { TypesenseRepository } from './search';
 import { FilesystemProvider } from './storage';
 
 const providers: Provider[] = [
+  { provide: IAlbumRepository, useClass: AlbumRepository },
+  { provide: IAssetRepository, useClass: AssetRepository },
   { provide: ICryptoRepository, useClass: CryptoRepository },
   { provide: IDeviceInfoRepository, useClass: DeviceInfoRepository },
   { provide: IKeyRepository, useClass: APIKeyRepository },
@@ -42,6 +52,7 @@ const providers: Provider[] = [
   { provide: ISystemConfigRepository, useClass: SystemConfigRepository },
   { provide: IUserRepository, useClass: UserRepository },
   { provide: IUserTokenRepository, useClass: UserTokenRepository },
+  { provide: ISearchRepository, useClass: TypesenseRepository },
 ];
 
 @Global()
@@ -49,6 +60,8 @@ const providers: Provider[] = [
   imports: [
     TypeOrmModule.forRoot(databaseConfig),
     TypeOrmModule.forFeature([
+      AssetEntity,
+      AlbumEntity,
       APIKeyEntity,
       DeviceInfoEntity,
       UserEntity,
@@ -83,6 +96,7 @@ const providers: Provider[] = [
       { name: QueueName.MACHINE_LEARNING },
       { name: QueueName.CONFIG },
       { name: QueueName.BACKGROUND_TASK },
+      { name: QueueName.SEARCH_INDEX },
     ),
   ],
   providers: [...providers],
