@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -13,9 +16,18 @@ class GalleryPermissionNotifier extends StateNotifier<PermissionStatus> {
 
   /// Requests the gallery permission
   Future<PermissionStatus> requestGalleryPermission() async {
-     final permission = await Permission.photos.request();
-     state = permission;
-     return permission;
+    // Android 32 and below uses Permission.storage
+    late Future<PermissionStatus> permission;
+    if (Platform.isAndroid) {
+      final androidInfo = await DeviceInfoPlugin().androidInfo;
+      if (androidInfo.version.sdkInt <= 32) {
+        permission = Permission.storage.request();
+      }
+    }
+
+    permission = Permission.photos.request();
+    state = await permission;
+    return state;
   }
 
   Future<PermissionStatus> getGalleryPermission() async {

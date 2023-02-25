@@ -45,7 +45,8 @@ dependencies:
   easy_image_viewer: ^1.2.0
   isar: *isar_version
   isar_flutter_libs: *isar_version # contains Isar Core
-  permission_handler: 10.1.0 # [Bug in 10.2.0](https://github.com/Baseflow/flutter-permission-handler/issues/944)
+  permission_handler: ^10.2.0
+  device_info_plus: ^8.1.0
 
   openapi:
     path: openapi
