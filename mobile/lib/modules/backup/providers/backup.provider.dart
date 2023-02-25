@@ -18,6 +18,7 @@ import 'package:immich_mobile/shared/providers/app_state.provider.dart';
 import 'package:immich_mobile/shared/services/server_info.service.dart';
 import 'package:logging/logging.dart';
 import 'package:openapi/api.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 class BackupNotifier extends StateNotifier<BackUpState> {
@@ -431,8 +432,8 @@ class BackupNotifier extends StateNotifier<BackUpState> {
 
     await getBackupInfo();
 
-    var authResult = await PhotoManager.requestPermissionExtend();
-    if (authResult.isAuth) {
+    var authResult = await Permission.photos.status;
+    if (authResult.isGranted || authResult.isLimited) {
       await PhotoManager.clearFileCache();
 
       if (state.allUniqueAssets.isEmpty) {
@@ -463,7 +464,7 @@ class BackupNotifier extends StateNotifier<BackUpState> {
       );
       await _notifyBackgroundServiceCanRun();
     } else {
-      PhotoManager.openSetting();
+      openAppSettings();
     }
   }
 
