@@ -1,15 +1,15 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class GalleryPermissionNotifier extends StateNotifier<PermissionStatus?> {
+class GalleryPermissionNotifier extends StateNotifier<PermissionStatus> {
   GalleryPermissionNotifier() 
-    : super(null) 
+    : super(PermissionStatus.denied)  // Denied is the intitial state
   {
     // Sets the initial state
     getGalleryPermission();
   }
 
-  get hasPermission => state != null && (state!.isGranted || state!.isLimited);
+  get hasPermission => state.isGranted || state.isLimited;
 
   /// Requests the gallery permission
   Future<PermissionStatus> requestGalleryPermission() async {
@@ -33,5 +33,5 @@ class GalleryPermissionNotifier extends StateNotifier<PermissionStatus?> {
 
 }
 final galleryPermissionNotifier
-  = StateNotifierProvider<GalleryPermissionNotifier, PermissionStatus?>
+  = StateNotifierProvider<GalleryPermissionNotifier, PermissionStatus>
     ((ref) => GalleryPermissionNotifier());

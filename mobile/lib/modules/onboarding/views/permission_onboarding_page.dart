@@ -99,13 +99,18 @@ class PermissionOnboardingPage extends HookConsumerWidget {
     }
 
     final Widget child;
-    if (permission == null || permission.isDenied) {
-      // No permission known yet
-      child = buildRequestPermission();
-    } else if (permission.isGranted || permission.isLimited) {
-      child = buildPermissionGranted();
-    } else {
-      child = buildPermissionDenied();
+    switch (permission) {
+      case PermissionStatus.denied:
+        child = buildRequestPermission();
+        break;
+      case PermissionStatus.limited:
+      case PermissionStatus.granted:
+        child = buildPermissionGranted();
+        break;
+      case PermissionStatus.restricted:
+      case PermissionStatus.permanentlyDenied:
+        child = buildPermissionDenied();
+        break;
     }
 
     return Scaffold(
