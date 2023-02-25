@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:immich_mobile/modules/backup/providers/backup.provider.dart';
 import 'package:immich_mobile/modules/onboarding/providers/gallery_permission.provider.dart';
-import 'package:immich_mobile/modules/onboarding/views/backup_album_onboarding_page.dart';
 import 'package:immich_mobile/routing/router.dart';
 import 'package:immich_mobile/shared/ui/immich_logo.dart';
 import 'package:immich_mobile/shared/ui/immich_title_text.dart';
@@ -54,7 +53,11 @@ class PermissionOnboardingPage extends HookConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text('permission_onboarding_permission_granted').tr(),
+          Text(
+            'permission_onboarding_permission_granted',
+            style: Theme.of(context).textTheme.titleMedium,
+            textAlign: TextAlign.center,
+          ).tr(),
           const SizedBox(height: 18),
           ElevatedButton(
             onPressed: () => AutoRouter.of(context).replace(
@@ -76,8 +79,10 @@ class PermissionOnboardingPage extends HookConsumerWidget {
             size: 48,
           ),
           const SizedBox(height: 8),
-          const Text(
+          Text(
             'permission_onboarding_permission_denied',
+            style: Theme.of(context).textTheme.titleMedium,
+            textAlign: TextAlign.center,
           ).tr(),
           const SizedBox(height: 18),
           ElevatedButton(
@@ -107,7 +112,7 @@ class PermissionOnboardingPage extends HookConsumerWidget {
                   padding: const EdgeInsets.all(18.0),
                   child: (permission.isGranted || permission.isLimited)
                    ? buildPermissionGranted()
-                   : permission.isPermanentlyDenied 
+                   : permission.isPermanentlyDenied || permission.isDenied
                     ? buildPermissionDenied()
                     : buildRequestPermission(),
                 ),
