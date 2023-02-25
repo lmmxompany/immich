@@ -60,9 +60,12 @@ class PermissionOnboardingPage extends HookConsumerWidget {
           ).tr(),
           const SizedBox(height: 18),
           ElevatedButton(
-            onPressed: () => AutoRouter.of(context).replace(
-              const TabControllerRoute(),
-            ),
+            onPressed: () { 
+              ref.watch(backupProvider.notifier).resumeBackup();
+              AutoRouter.of(context).replace(
+                const TabControllerRoute(),
+              );
+            },
             child: const Text('permission_onboarding_get_started').tr(),
           ),
         ],
@@ -95,29 +98,38 @@ class PermissionOnboardingPage extends HookConsumerWidget {
       );
     }
 
+    final Widget child;
+    if (permission == null || permission.isDenied) {
+      // No permission known yet
+      child = buildRequestPermission();
+    } else if (permission.isGranted || permission.isLimited) {
+      child = buildPermissionGranted();
+    } else {
+      child = buildPermissionDenied();
+    }
+
     return Scaffold(
       body: SafeArea(
         child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const ImmichLogo(
-                heroTag: 'logo',
-              ),
-              const ImmichTitleText(),
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 500),
-                child: Padding(
-                  padding: const EdgeInsets.all(18.0),
-                  child: (permission.isGranted || permission.isLimited)
-                   ? buildPermissionGranted()
-                   : permission.isPermanentlyDenied || permission.isDenied
-                    ? buildPermissionDenied()
-                    : buildRequestPermission(),
+          child: SizedBox(
+            width: 380,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const ImmichLogo(
+                  heroTag: 'logo',
                 ),
-              ),
-            ],
+                const ImmichTitleText(),
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 500),
+                  child: Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: child,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
