@@ -38,7 +38,6 @@ class SplashScreenPage extends HookConsumerWidget {
                 .read(galleryPermissionNotifier.notifier).getGalleryPermission();
             if (galleryPermission.isGranted) {
               // Resume backup (if enable) then navigate
-              print('resuming backup');
               ref.watch(backupProvider.notifier).resumeBackup();
             }
             AutoRouter.of(context).replace(const TabControllerRoute());
