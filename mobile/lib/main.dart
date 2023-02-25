@@ -145,7 +145,7 @@ class ImmichAppState extends ConsumerState<ImmichApp>
         ref.watch(notificationPermissionProvider.notifier)
           .getNotificationPermission();
         ref.watch(galleryPermissionNotifier.notifier)
-          .getGalleryPermission();
+          .getGalleryPermissionStatus();
 
         ref.read(iOSBackgroundSettingsProvider.notifier).refresh();
 

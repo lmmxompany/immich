@@ -35,8 +35,8 @@ class SplashScreenPage extends HookConsumerWidget {
               );
           if (isSuccess) {
             final galleryPermission = await ref
-                .read(galleryPermissionNotifier.notifier).getGalleryPermission();
-            if (galleryPermission.isGranted) {
+                .read(galleryPermissionNotifier.notifier).getGalleryPermissionStatus();
+            if (galleryPermission.isGranted || galleryPermission.isLimited) {
               // Resume backup (if enable) then navigate
               ref.watch(backupProvider.notifier).resumeBackup();
             }

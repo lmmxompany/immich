@@ -31,10 +31,14 @@ class PermissionOnboardingPage extends HookConsumerWidget {
             onPressed: () => ref
               .read(galleryPermissionNotifier.notifier)
               .requestGalleryPermission()
-              .then((permission) {
+              .then((permission) async {
                 if (permission.isGranted || permission.isLimited) {
                   // Resume backup (if enable) then navigate
-                  ref.read(backupProvider.notifier).resumeBackup();
+                  try {
+                    ref.read(backupProvider.notifier).resumeBackup();
+                  } catch (error) {
+                    debugPrint('PermissionOnboardingPage error: $error');
+                  }
                   AutoRouter.of(context).replace(
                     const TabControllerRoute(),
                   );
