@@ -14,8 +14,9 @@ class PermissionOnboardingPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final permission = ref.watch(galleryPermissionNotifier);
+    final PermissionStatus permission = ref.watch(galleryPermissionNotifier);
 
+    // Navigate to the main Tab Controller when permission is granted
     goToHome() {
       // Resume backup (if enable) then navigate
       ref.read(backupProvider.notifier).resumeBackup()
@@ -27,6 +28,7 @@ class PermissionOnboardingPage extends HookConsumerWidget {
       );
     }
 
+    // When the permission is denied, we show a request permission page
     buildRequestPermission() {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -43,7 +45,9 @@ class PermissionOnboardingPage extends HookConsumerWidget {
               .read(galleryPermissionNotifier.notifier)
               .requestGalleryPermission()
               .then((permission) async {
-                if (permission.isGranted || permission.isLimited) {
+                if (permission.isGranted) {
+                  // If permission is limited, we will show the limited
+                  // permission page
                   goToHome();
                 }
               }),
@@ -55,6 +59,8 @@ class PermissionOnboardingPage extends HookConsumerWidget {
       );
     }
 
+    // When permission is granted from outside the app, this will show to
+    // let them continue on to the main timeline
     buildPermissionGranted() {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -74,6 +80,9 @@ class PermissionOnboardingPage extends HookConsumerWidget {
       );
     }
 
+    // iOS 14+ has limited permission options, which let someone just share
+    // a few photos with the app. If someone only has limited permissions, we
+    // inform that Immich works best when given full permission
     buildPermissionLimited() {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
