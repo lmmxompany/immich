@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:immich_mobile/modules/onboarding/providers/gallery_permission.provider.dart';
+import 'package:immich_mobile/routing/router.dart';
 
 class GalleryPermissionGuard extends AutoRouteGuard {
   final GalleryPermissionNotifier _permission;
